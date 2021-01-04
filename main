@@ -10,13 +10,13 @@ sudo ip link add veth0 type veth peer name veth1;
 ## move veth0 into the virtual network
 sudo ip link set veth0 netns $virt_network_name;
 
-sudo ip netns exec $virt_network_name ifconfig veth0 up 10.13.2.1 netmask 255.255.255.0;
-sudo ifconfig veth1 up 10.13.2.254 netmask 255.255.255.0;
+sudo ip netns exec $virt_network_name ifconfig veth0 up 192.168.3.1 netmask 255.255.255.0;
+sudo ifconfig veth1 up 192.168.3.254 netmask 255.255.255.0;
 
-sudo ip netns exec $virt_network_name route add default gw 10.13.2.254 dev veth0;
+sudo ip netns exec $virt_network_name route add default gw 192.168.3.254 dev veth0;
 sudo sh -c 'echo 1 > /proc/sys/net/ipv4/ip_forward';
 
-sudo iptables -t nat -A POSTROUTING -s 10.13.2.0/24 -o enp5s0 -j SNAT --to-source 10.13.0.172;
+sudo iptables -t nat -A POSTROUTING -s 192.168.3.0/24 -o enp34s0 -j SNAT --to-source 192.168.1.90;
 
 sudo ip netns exec $virt_network_name tcpdump -w test.pcap &
 
